@@ -68,6 +68,11 @@ font-family: 'Lora', serif;
   scroll-behavior: smooth;
 }
 
+html {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   margin: 0;
   min-width: 320px;

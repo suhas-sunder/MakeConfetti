@@ -7,14 +7,14 @@ function PosthogInit() {
   useEffect(() => {
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       requestIdleCallback(() => {
-        posthog.init("phc_2IQDpa7YpxYMhcOXtPMlgcrrHmNjX4pY3wuvr3LKjS3", {
+        posthog.init("phc_gS5Po7Dghk8Jm2NIy7tdnai9uuwjMttdx4KDfp5cZNZ", {
           api_host: "https://us.i.posthog.com",
           person_profiles: "identified_only", // or 'always' for anonymous users
         });
       });
     } else {
       // Fallback if requestIdleCallback is not supported
-      posthog.init("phc_2IQDpa7YpxYMhcOXtPMlgcrrHmNjX4pY3wuvr3LKjS3", {
+      posthog.init("phc_gS5Po7Dghk8Jm2NIy7tdnai9uuwjMttdx4KDfp5cZNZ", {
         api_host: "https://us.i.posthog.com",
         person_profiles: "identified_only",
       });

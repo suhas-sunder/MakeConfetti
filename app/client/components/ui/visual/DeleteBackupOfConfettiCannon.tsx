@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import useOnlyOnClient from "../../hooks/useOnlyOnClient";
 import ConfettiPresets from "../../data/ConfettiPresets";
 
@@ -14,7 +8,6 @@ interface ConfettiProps {
   maxLifetime?: number; // Adjusted for longer confetti presence
   gravity?: number; // Adjusted for falling
   wind?: number; // Random wind effect
-  spawnerIds: string[];
 }
 
 // Particle Interface
@@ -38,8 +31,8 @@ interface Particle {
 const emojis = ["🎉", "🥳", "✨", "🎊", "💖", "🌟", "🎈", "🍾", "🎁", "💫"]; // List of emojis
 
 const Confetti: React.FC<ConfettiProps> = ({
+  particleCount = 500, // Starting particle count
   maxLifetime = 3000, // Longer lifetime for fading out
-  spawnerIds,
 }) => {
   const presets = useMemo(() => ConfettiPresets(), []); // List of confetti presets
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -89,69 +82,58 @@ const Confetti: React.FC<ConfettiProps> = ({
     });
   }, [isClient]);
 
-  const createParticle = useCallback(
-    (burstX: number, burstY: number): Particle => {
-      // Check if there are any available particles in the pool
-      const particle = particlesPool.pop() || createEmptyParticle(); // Get from pool or create a new one
+  const createParticle = (burstX: number, burstY: number): Particle => {
+    // Check if there are any available particles in the pool
+    const particle = particlesPool.pop() || createEmptyParticle(); // Get from pool or create a new one
 
-      // If the particle already has x and y set, return it without modification
-      if (particle.x !== 0 && particle.y !== 0) {
-        return particle;
-      }
+    const preset = presets[selectedPreset]; // Access the selected preset
+    const isEmoji = showEmojis && Math.random() < preset.emojiChance; // Check for emoji inclusion
 
-      const preset = presets[selectedPreset]; // Access the selected preset
-      const isEmoji = showEmojis && Math.random() < preset.emojiChance; // Check for emoji inclusion
+    // Randomly spread left or right for confetti and emojis
+    const spreadFactorX = Math.random() < 0.5 ? -1 : 1; // Randomly assign left/right spread
 
-      // Randomly spread left or right for confetti and emojis
-      const spreadFactorX = Math.random() < 0.5 ? -1 : 1; // Randomly assign left/right spread
+    const speedX =
+      (Math.random() * (preset.speedX.max - preset.speedX.min) +
+        preset.speedX.min) *
+        spreadFactorX +
+      preset.wind;
 
-      const speedX =
-        (Math.random() * (preset.speedX.max - preset.speedX.min) +
-          preset.speedX.min) *
-          spreadFactorX +
-        preset.wind;
+    // Adjust upward speed for confetti, making it similar to emoji behavior
+    const speedY = isEmoji
+      ? Math.random() * -15 - 10 // For emojis, a larger upward speed
+      : Math.random() * -15 - 10; // For confetti, mimic the upward speed of emojis
 
-      // Adjust upward speed for confetti, making it similar to emoji behavior
-      const speedY = isEmoji
-        ? Math.random() * -15 - 10 // For emojis, a larger upward speed
-        : Math.random() * -15 - 10; // For confetti, mimic the upward speed of emojis
+    // Set particle properties
+    particle.x = burstX;
+    particle.y = burstY;
+    particle.size = isEmoji
+      ? Math.random() * 20 + 20 // Size adjustment for emojis
+      : Math.random() * (preset.size.max - preset.size.min) + preset.size.min; // Size for confetti
+    particle.speedX = speedX;
+    particle.speedY = speedY;
+    particle.accelerationX = (Math.random() - 0.5) * 0.2; // Slight horizontal acceleration
+    particle.accelerationY = preset.gravity; // Use preset gravity
+    particle.color =
+      isEmoji || !showConfetti
+        ? null
+        : preset.colors[Math.floor(Math.random() * preset.colors.length)]; // Use random color for confetti
+    particle.rotation = Math.random() * 360; // Random rotation
+    particle.rotationSpeed =
+      Math.random() * (preset.rotationSpeed.max - preset.rotationSpeed.min) +
+      preset.rotationSpeed.min; // Rotation speed from preset
+    particle.shape =
+      isEmoji || !showConfetti
+        ? null
+        : Math.random() > 0.5
+        ? "circle"
+        : "rectangle"; // Randomly assign shape
+    particle.emoji = isEmoji
+      ? emojis[Math.floor(Math.random() * emojis.length)]
+      : null; // Select random emoji if applicable
+    particle.lifetime = 0; // Initialize lifetime
 
-      // Set particle properties
-      particle.x = burstX; // Set burst position
-      particle.y = burstY; // Set burst position
-      particle.size = isEmoji
-        ? Math.random() * 20 + 20 // Size adjustment for emojis
-        : Math.random() * (preset.size.max - preset.size.min) + preset.size.min; // Size for confetti
-      particle.speedX = speedX;
-      particle.speedY = speedY;
-      particle.accelerationX = (Math.random() - 0.5) * 0.2; // Slight horizontal acceleration
-      particle.accelerationY = preset.gravity; // Use preset gravity
-      particle.color =
-        isEmoji || !showConfetti
-          ? null
-          : preset.colors[Math.floor(Math.random() * preset.colors.length)]; // Use random color for confetti
-      particle.rotation = Math.random() * 360; // Random rotation
-      particle.rotationSpeed =
-        Math.random() * (preset.rotationSpeed.max - preset.rotationSpeed.min) +
-        preset.rotationSpeed.min; // Rotation speed from preset
-      particle.shape =
-        isEmoji || !showConfetti
-          ? null
-          : Math.random() > 0.5
-          ? "circle"
-          : "rectangle"; // Randomly assign shape
-      particle.emoji = isEmoji
-        ? emojis[Math.floor(Math.random() * emojis.length)]
-        : null; // Select random emoji if applicable
-      particle.lifetime = 0; // Initialize lifetime
-
-      // Add the configured particle back to the pool
-      particlesPool.push(particle);
-
-      return particle; // Return the configured particle
-    },
-    [particlesPool, presets, selectedPreset, showEmojis, showConfetti]
-  );
+    return particle; // Return the configured particle
+  };
 
   const animateConfetti = () => {
     if (!isClient || !canvasRef.current) return;
@@ -191,48 +173,25 @@ const Confetti: React.FC<ConfettiProps> = ({
     }
   };
 
-  // Memoization storage
-  let lastParticle: Particle | null = null;
-  let lastParticleAlpha: number | null = null;
-  let lastParticleFont: string | null = null;
-  let lastParticleColor: string | null = null;
-
   const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle) => {
-    // Check if the particle properties have changed
-    const alpha = 1 - particle.lifetime / maxLifetime; // Fading effect
-
-    // If the particle is the same as the last drawn, return early
-    if (
-      lastParticle === particle &&
-      lastParticleAlpha === alpha &&
-      lastParticleFont === `${particle.size}px Arial` &&
-      lastParticleColor === particle.color
-    ) {
-      ctx.globalAlpha = alpha;
-      ctx.fillText(particle.emoji!, -particle.size / 2, particle.size / 2);
-      return;
-    }
-
     ctx.save();
     ctx.translate(particle.x, particle.y);
     ctx.rotate((particle.rotation * Math.PI) / 180);
 
+    const alpha = 1 - particle.lifetime / maxLifetime; // Fading effect
     ctx.globalAlpha = alpha;
 
     if (particle.emoji) {
-      const font = `${particle.size}px Arial`;
-      if (font !== lastParticleFont) {
-        ctx.font = font; // Set font only if it's different
-        lastParticleFont = font;
-      }
+      ctx.font = `${particle.size}px Arial`;
       ctx.fillText(particle.emoji, -particle.size / 2, particle.size / 2);
     } else if (particle.shape) {
-      ctx.fillStyle = particle.color!;
       if (particle.shape === "circle") {
+        ctx.fillStyle = particle.color!;
         ctx.beginPath();
         ctx.arc(0, 0, particle.size, 0, Math.PI * 2);
         ctx.fill();
       } else {
+        ctx.fillStyle = particle.color!;
         ctx.fillRect(
           -particle.size / 2,
           -particle.size / 2,
@@ -243,83 +202,78 @@ const Confetti: React.FC<ConfettiProps> = ({
     }
 
     ctx.restore();
-
-    // Update last particle details
-    lastParticle = particle;
-    lastParticleAlpha = alpha;
-    lastParticleColor = particle.color;
   };
 
-  const initializeParticles = useCallback(() => {
+  const startCannonConfetti = () => {
     stopConfetti(); // Stop any existing confetti before starting a new one
-
-    const preset = presets[selectedPreset]; // Access the selected preset
-
-    // Preallocate the particle array with double the size of particleCount for both elements
-    const newParticles = new Array(
-      preset.particleCount * (spawnerIds.length || 1)
-    );
-    let particleIndex = 0; // To keep track of the current index in the particles array
-
-    // Loop through each target element to calculate burst positions
-    spawnerIds.forEach((id) => {
-      const targetElement = document.getElementById(id);
-      if (targetElement) {
-        const { left, top, width, height } =
-          targetElement.getBoundingClientRect();
-        // Calculate the center of the target element, adjusting for scrolling
-        const burstX = left + width / 2 + window.scrollX;
-        const burstY = top + height / 2 + window.scrollY; // Center vertically
-
-        // Create particles for the current target element
-        for (let i = 0; i < preset.particleCount; i++) {
-          newParticles[particleIndex] = createParticle(
-            burstX || Math.random() * width,
-            burstY || 0
-          );
-          particleIndex++; // Move to the next index
-        }
-      }
-    });
-
-    particlesRef.current = newParticles; // Store the new particles in the reference
-  }, [presets, selectedPreset, spawnerIds, createParticle]);
-
-  const startCannonAtFindMe = () => {
     if (!isClient) return;
 
-    initializeParticles();
+    const { width, height } = canvasDimensions;
+    const burstX = width / 2;
+    const burstY = height / 2;
 
-    // Start the animation
+    const newParticles = new Array(particleCount);
+    for (let i = 0; i < particleCount; i++) {
+      newParticles[i] = createParticle(burstX, burstY);
+    }
+
+    particlesRef.current = newParticles;
     animateConfetti();
 
-    // Ensure only one timeout is active, clearing any existing one
     if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
     timeoutIdRef.current = window.setTimeout(stopConfetti, 10000);
   };
 
-  // const startFallingConfetti = () => {
-  //   if (!isClient) return;
-  //   stopConfetti(); // Stop any existing confetti before starting a new one
-  //   const preset = presets[selectedPreset]; // Access the selected preset
+  const startCannonAtFindMe = () => {
+    if (!isClient) return;
+    stopConfetti(); // Stop any existing confetti before starting a new one
+  
+    // Locate the target element once and cache its dimensions
+    const targetElement = document.getElementById("find-me");
+    if (!targetElement) return;
+  
+    const { left, top, width, height } = targetElement.getBoundingClientRect();
+    // Calculate the center of the target element, adjusting for scrolling
+    const burstX = left + width / 2 + window.scrollX;
+    const burstY = top + height / 2 + window.scrollY; // Center vertically
+  
+    // Preallocate the particle array and fill it with newly created particles
+    const newParticles = new Array(particleCount);
+    for (let i = 0; i < particleCount; i++) {
+      newParticles[i] = createParticle(burstX, burstY);
+    }
+  
+    particlesRef.current = newParticles;
+    animateConfetti();
+  
+    // Ensure only one timeout is active, clearing any existing one
+    if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
+    timeoutIdRef.current = window.setTimeout(stopConfetti, 10000);
+  };
+  
 
-  //   const { width } = canvasDimensions;
 
-  //   // Preallocate the particle array and generate particles starting from the top
-  //   const newParticles = new Array(preset.particleCount);
-  //   for (let i = 0; i < preset.particleCount; i++) {
-  //     newParticles[i] = createParticle(Math.random() * width, 0);
-  //   }
+  const startFallingConfetti = () => {
+    if (!isClient) return;
+    stopConfetti(); // Stop any existing confetti before starting a new one
 
-  //   particlesRef.current = newParticles;
-  //   animateConfetti();
+    const { width } = canvasDimensions;
 
-  //   // Ensure only one timeout is active by clearing any existing one before setting a new timeout
-  //   if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
-  //   timeoutIdRef.current = window.setTimeout(stopConfetti, 10000);
-  // };
+    // Preallocate the particle array and generate particles starting from the top
+    const newParticles = new Array(particleCount);
+    for (let i = 0; i < particleCount; i++) {
+      newParticles[i] = createParticle(Math.random() * width, 0);
+    }
 
+    particlesRef.current = newParticles;
+    animateConfetti();
+
+    // Ensure only one timeout is active by clearing any existing one before setting a new timeout
+    if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
+    timeoutIdRef.current = window.setTimeout(stopConfetti, 10000);
+  };
   const stopConfetti = () => {
+    console.log("Stopping confetti..."); // Check if this logs when expected
     if (animationIdRef.current) {
       cancelAnimationFrame(animationIdRef.current);
       animationIdRef.current = null;
@@ -353,22 +307,12 @@ const Confetti: React.FC<ConfettiProps> = ({
     };
   };
 
+  // Pre-fill the pool with empty particles
   useEffect(() => {
-    // Pre-fill the pool with empty particles
-    const preset = presets[selectedPreset];
-
-    if (preset.particleCount > particlesPool.length) {
-      for (let i = 0; i < preset.particleCount; i++) {
-        particlesPool.push(createEmptyParticle()); // Use a new function to create empty particles
-      }
+    for (let i = 0; i < particleCount; i++) {
+      particlesPool.push(createEmptyParticle()); // Use a new function to create empty particles
     }
-
-    // Initialize the particles every time the preset changes after the pool is pre-filled with empty particles && target Id's exist
-    spawnerIds &&
-      spawnerIds.length > 0 &&
-      particlesPool.length >= preset.particleCount &&
-      initializeParticles();
-  }, [initializeParticles, particlesPool, presets, selectedPreset, spawnerIds]);
+  }, [particleCount, particlesPool]);
 
   // Handle window resizing
   useEffect(() => {
@@ -401,13 +345,28 @@ const Confetti: React.FC<ConfettiProps> = ({
 
   return (
     <>
-      <div className="absolute bottom-0 flex-col z-20 gap-5 flex w-full justify-center items-center">
-        {/* <button
+      {isClient && (
+        <canvas
+          ref={canvasRef}
+          width={canvasDimensions.width}
+          height={canvasDimensions.height}
+          className="absolute top-[3.2em] left-0 right-0 bottom-0 w-full h-full overflow-x-hidden confetti-container flex flex-col justify-center items-center bg-rose-50"
+          style={{ pointerEvents: "none" }} // Allows interaction for buttons etc. below canvas. Remove this or set it to "auto" to disable pointer events below canvas.
+        />
+      )}
+      <div className="absolute bottom-0 w-full flex-col gap-5">
+        <button
+          onClick={startCannonConfetti}
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Start Cannon Confetti
+        </button>
+        <button
           onClick={startFallingConfetti}
           className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
         >
           Start Falling Confetti
-        </button> */}
+        </button>
         <button
           onClick={startCannonAtFindMe}
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
@@ -450,15 +409,6 @@ const Confetti: React.FC<ConfettiProps> = ({
           </select>
         </div>
       </div>
-      {isClient && (
-        <canvas
-          ref={canvasRef}
-          width={canvasDimensions.width * 2}
-          height={canvasDimensions.height * 2}
-          className="absolute top-[3.2em] min-h-[100vh] left-0 right-0 bottom-0 w-full h-full overflow-x-hidden flex flex-col justify-center items-center "
-          style={{ pointerEvents: "none" }} // Allows interaction for buttons etc. below canvas. Remove this or set it to "auto" to disable pointer events below canvas.
-        />
-      )}
     </>
   );
 };

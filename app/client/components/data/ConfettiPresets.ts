@@ -14,7 +14,7 @@ function ConfettiPresets() {
     }
   > = {
     classic: {
-      particleCount: 250,
+      particleCount: 850,
       gravity: 0.3,
       wind: 0.1,
       colors: ["#FF6347", "#FFD700", "#ADFF2F", "#00BFFF", "#FF69B4"],
@@ -418,7 +418,7 @@ function ConfettiPresets() {
       emojiChance: 0.35, // Significant chance of emoji appearance
     },
     ultimateFanExplosion: {
-      particleCount: 1500, // Maximum particle count for an overwhelming effect
+      particleCount: 250, // Maximum particle count for an overwhelming effect
       gravity: 0.7, // Higher gravity for quicker descent and more dramatic fall
       wind: 6, // Increased wind to enhance the spread effect
       colors: [
