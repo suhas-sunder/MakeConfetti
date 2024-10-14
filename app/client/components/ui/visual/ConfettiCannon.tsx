@@ -19,7 +19,52 @@ interface ConfettiProps {
 }
 
 // Emoji List
-const emojis = ["🎉", "🥳", "✨", "🎊", "💖", "🌟", "🎈", "🍾", "🎁", "💫"]; // List of emojis
+const emojis = [
+  "🎉",
+  "🥳",
+  "✨",
+  "🎊",
+  "💖",
+  "🌟",
+  "🎈",
+  "🍾",
+  "🎁",
+  "💫",
+  "🎉",
+  "🥳",
+  "✨",
+  "🎊",
+  "💖",
+  "🌟",
+  "🎈",
+  "🍾",
+  "🎁",
+  "💫",
+  "🎉",
+  "🥳",
+  "✨",
+  "🎊",
+  "💖",
+  "🌟",
+  "🎈",
+  "🍾",
+  "🎁",
+  "💫",
+  "🎉",
+  "🥳",
+  "✨",
+  "🎊",
+  "💖",
+  "🌟",
+  "🎈",
+  "🍾",
+  "🎁",
+  "💫",
+  "astro",
+  "bligg",
+  "tilt",
+  "d",
+]; // List of emojis
 
 export type Particle = {
   x: number;
@@ -139,8 +184,12 @@ const Confetti: React.FC<ConfettiProps> = ({
     },
     [particlesPoolForSpawner, presets, selectedPreset, showEmojis, showConfetti]
   );
-
-  const animateConfetti = () => {
+  const animateConfetti = (
+    angle = 0,
+    reverseX = false,
+    reverseY = false,
+    speedMagnitude = 5
+  ) => {
     if (!isClient || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -151,12 +200,29 @@ const Confetti: React.FC<ConfettiProps> = ({
 
     const aliveParticles = [];
 
+    // Convert angle to radians
+    const radians = (angle * Math.PI) / 180;
+
+    // Calculate offsets based on angle
+    const speedOffsetX = Math.cos(radians) * speedMagnitude;
+    const speedOffsetY = Math.sin(radians) * speedMagnitude;
+
     for (let i = 0; i < particlesRef.current.length; i++) {
       const particle = particlesRef.current[i];
 
-      // Update particle position
-      particle.x += particle.speedX;
-      particle.y += particle.speedY;
+      const finalXSpeed =
+        angle === 0 || angle === 180
+          ? particle.speedX
+          : particle.speedX + speedOffsetX;
+      const finalYSpeed =
+        angle === 90 || angle === 270
+          ? particle.speedY
+          : particle.speedY + speedOffsetY;
+
+      // Update particle position with angle-based offsets
+      particle.y += reverseY ? -finalYSpeed : finalYSpeed;
+      particle.x += reverseX ? -finalXSpeed : finalXSpeed;
+
       particle.speedY += particle.accelerationY;
       particle.lifetime++;
 
@@ -172,74 +238,132 @@ const Confetti: React.FC<ConfettiProps> = ({
 
     // Continue animation if there are particles left
     if (particlesRef.current.length > 0) {
-      animationIdRef.current = requestAnimationFrame(animateConfetti);
+      animationIdRef.current = requestAnimationFrame(() =>
+        animateConfetti(angle, reverseX, reverseY)
+      ); // Pass angle and direction to the next frame
     } else {
       stopConfetti();
     }
   };
 
-  let lastParticle: Particle | null = null;
-  let lastParticleAlpha: number | null = null;
-  let lastParticleFont: string | null = null;
-  let lastParticleColor: string | null = null;
+  // Function to round size to nearest increment (e.g., 10)
+const roundToNearestSize = (size: number, increment: number) => {
+  return Math.round(size / increment) * increment;
+};
 
-  const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle) => {
-    // Check if the particle properties have changed
-    const alpha = 1 - particle.lifetime / maxLifetime; // Fading effect
+// Cache object for emojis and shapes
+const emojiCache: { [key: string]: HTMLCanvasElement } = {};
+const shapeCache: { [key: string]: HTMLCanvasElement } = {};
 
-    // If the particle is the same as the last drawn, return early
-    if (
-      lastParticle === particle &&
-      lastParticleAlpha === alpha &&
-      lastParticleFont === `${particle.size}px Arial` &&
-      lastParticleColor === particle.color
-    ) {
-      ctx.globalAlpha = alpha;
-      ctx.fillText(particle.emoji!, -particle.size / 2, particle.size / 2);
-      return;
+// Function to get the cached emoji or create it if not cached
+const getCachedEmoji = (emoji: string, size: number, increment: number = 10) => {
+  const roundedSize = roundToNearestSize(size, increment);
+  const cacheKey = `${emoji}-${roundedSize}`;
+
+  // Return the cached canvas if it exists
+  if (emojiCache[cacheKey]) {
+    return emojiCache[cacheKey];
+  }
+
+  // Create a new off-screen canvas for the emoji
+  const offscreenCanvas = document.createElement("canvas");
+  const ctx = offscreenCanvas.getContext("2d");
+
+  if (!ctx) return null;
+
+  // Set canvas dimensions based on the rounded emoji size
+  offscreenCanvas.width = roundedSize;
+  offscreenCanvas.height = roundedSize;
+
+  // Draw the emoji on the off-screen canvas
+  ctx.font = `${roundedSize}px Arial`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(emoji, roundedSize / 2, roundedSize / 2); // Center the emoji on the canvas
+
+  // Cache the canvas
+  emojiCache[cacheKey] = offscreenCanvas;
+
+  return offscreenCanvas;
+};
+
+// Function to get the cached shape or create it if not cached
+const getCachedShape = (shape: string, size: number, color: string, increment: number = 10) => {
+  const roundedSize = roundToNearestSize(size, increment);
+  const cacheKey = `${shape}-${roundedSize}-${color}`;
+
+  // Return the cached canvas if it exists
+  if (shapeCache[cacheKey]) {
+    return shapeCache[cacheKey];
+  }
+
+  // Create a new off-screen canvas for the shape
+  const offscreenCanvas = document.createElement("canvas");
+  const ctx = offscreenCanvas.getContext("2d");
+
+  if (!ctx) return null;
+
+  // Set canvas dimensions based on the rounded shape size
+  offscreenCanvas.width = roundedSize;
+  offscreenCanvas.height = roundedSize;
+
+  // Draw the shape on the off-screen canvas
+  ctx.fillStyle = color;
+  ctx.translate(roundedSize / 2, roundedSize / 2); // Center the shape
+  if (shape === "circle") {
+    ctx.beginPath();
+    ctx.arc(0, 0, roundedSize / 2, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    ctx.fillRect(-roundedSize / 2, -roundedSize / 2, roundedSize, roundedSize);
+  }
+
+  // Cache the canvas
+  shapeCache[cacheKey] = offscreenCanvas;
+
+  return offscreenCanvas;
+};
+
+// Updated drawParticle function to use the cached emoji or shape
+const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle, increment: number = 10) => {
+  const { x, y, size, rotation, emoji, shape, color, lifetime } = particle;
+  const alpha = 1 - lifetime / maxLifetime; // Fading effect
+
+  // Round size to nearest increment
+  const roundedSize = roundToNearestSize(size, increment);
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate((rotation * Math.PI) / 180);
+  ctx.globalAlpha = alpha;
+
+  if (emoji) {
+    const emojiCanvas = getCachedEmoji(emoji, size, increment);
+    if (emojiCanvas) {
+      // Draw emoji from cache using the rounded size
+      ctx.drawImage(emojiCanvas, -roundedSize / 2, -roundedSize / 2, roundedSize, roundedSize);
     }
-
-    ctx.save();
-    ctx.translate(particle.x, particle.y);
-    ctx.rotate((particle.rotation * Math.PI) / 180);
-
-    ctx.globalAlpha = alpha;
-
-    if (particle.emoji) {
-      const font = `${particle.size}px Arial`;
-      if (font !== lastParticleFont) {
-        ctx.font = font; // Set font only if it's different
-        lastParticleFont = font;
-      }
-      ctx.fillText(particle.emoji, -particle.size / 2, particle.size / 2);
-    } else if (particle.shape) {
-      ctx.fillStyle = particle.color!;
-      if (particle.shape === "circle") {
-        ctx.beginPath();
-        ctx.arc(0, 0, particle.size, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        ctx.fillRect(
-          -particle.size / 2,
-          -particle.size / 2,
-          particle.size,
-          particle.size
-        );
-      }
+  } else if (shape) {
+    const shapeCanvas = getCachedShape(shape, size, color!, increment);
+    if (shapeCanvas) {
+      // Draw shape from cache using the rounded size
+      ctx.drawImage(shapeCanvas, -roundedSize / 2, -roundedSize / 2, roundedSize, roundedSize);
     }
+  }
 
-    ctx.restore();
-
-    // Update last particle details
-    lastParticle = particle;
-    lastParticleAlpha = alpha;
-    lastParticleColor = particle.color;
-  };
+  ctx.restore();
+};
 
   const initializeParticles = useCallback(() => {
     stopConfetti(); // Stop any existing confetti before starting a new one
 
     const preset = presets[selectedPreset]; // Access the selected preset
+    const totalParticles = preset.particleCount * spawnerIds.length;
+
+    // Ensure the pool is filled to the max expected number of particles
+    while (particlesPoolForSpawner.length < totalParticles) {
+      particlesPoolForSpawner.push(CreateEmptyParticle());
+    }
 
     // Preallocate the particle array with double the size of particleCount for both elements
     const newParticles = new Array(
@@ -269,7 +393,13 @@ const Confetti: React.FC<ConfettiProps> = ({
     });
 
     particlesRef.current = newParticles; // Store the new particles in the reference
-  }, [presets, selectedPreset, spawnerIds, createParticle]);
+  }, [
+    presets,
+    selectedPreset,
+    spawnerIds,
+    particlesPoolForSpawner,
+    createParticle,
+  ]);
 
   const startCannonAtFindMe = () => {
     if (!isClient) return;
@@ -280,6 +410,7 @@ const Confetti: React.FC<ConfettiProps> = ({
     animateConfetti();
 
     if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
+
     timeoutIdRef.current = window.setTimeout(stopConfetti, 10000);
   };
 
@@ -309,12 +440,6 @@ const Confetti: React.FC<ConfettiProps> = ({
     // Pre-fill the pool with empty particles
     const preset = presets[selectedPreset];
 
-    if (preset.particleCount > particlesPoolForSpawner.length) {
-      for (let i = 0; i < preset.particleCount; i++) {
-        particlesPoolForSpawner.push(CreateEmptyParticle()); // Use a new function to create empty particles
-      }
-    }
-
     // Initialize the particles every time the preset changes after the pool is pre-filled with empty particles && target Id's exist
     spawnerIds &&
       spawnerIds.length > 0 &&
@@ -326,6 +451,7 @@ const Confetti: React.FC<ConfettiProps> = ({
     presets,
     selectedPreset,
     spawnerIds,
+    showEmojis,
   ]);
 
   return (
