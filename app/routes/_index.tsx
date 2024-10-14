@@ -55,7 +55,7 @@ function Header() {
         🎊🥳 Make Confetti 🪅🎉
       </h1>
 
-      <div className="flex gap-5 w-full items-center justify-center  mb-[20em]">
+      <div className="flex gap-5 w-full flex-wrap items-center justify-center max-w-[1400px] mx-auto mb-auto mt-[10em]">
         {spawnerIds.map((id) => (
           <Fragment key={id + "movable-item-key"}>
             <MoveMe id={id} />
@@ -65,7 +65,7 @@ function Header() {
       <Confetti spawnerIds={spawnerIds} />
       <button
         onClick={() => handleAddSpawner()}
-        className="flex absolute bottom-[20em] justify-center w-full items-center"
+        className="flex absolute bottom-[20em] z-[200] justify-center w-full items-center"
       >
         Add More Confetti Spawners
       </button>

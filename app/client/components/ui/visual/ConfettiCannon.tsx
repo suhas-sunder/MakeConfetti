@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import useOnlyOnClient from "../../hooks/useOnlyOnClient";
 import ConfettiPresets from "../../data/ConfettiPresets";
+import ConfettiCanvas from "../interactive/ConfettiCanvas";
 
 interface ConfettiProps {
   particleCount?: number; // Starting number of particles
@@ -17,8 +18,10 @@ interface ConfettiProps {
   spawnerIds: string[];
 }
 
-// Particle Interface
-interface Particle {
+// Emoji List
+const emojis = ["🎉", "🥳", "✨", "🎊", "💖", "🌟", "🎈", "🍾", "🎁", "💫"]; // List of emojis
+
+export type Particle = {
   x: number;
   y: number;
   size: number;
@@ -32,67 +35,51 @@ interface Particle {
   shape: "circle" | "rectangle" | null;
   emoji: string | null;
   lifetime: number; // Lifetime of the particle
-}
+};
 
-// Emoji List
-const emojis = ["🎉", "🥳", "✨", "🎊", "💖", "🌟", "🎈", "🍾", "🎁", "💫"]; // List of emojis
+// Create an empty particle with default values for confetti particle effect
+const CreateEmptyParticle = (): Particle => {
+  return {
+    x: 0,
+    y: 0,
+    size: 10,
+    speedX: 0,
+    speedY: 0,
+    accelerationX: 0,
+    accelerationY: 0,
+    color: null,
+    rotation: 0,
+    rotationSpeed: 0,
+    shape: null,
+    emoji: null,
+    lifetime: 0,
+  };
+};
 
 const Confetti: React.FC<ConfettiProps> = ({
   maxLifetime = 3000, // Longer lifetime for fading out
   spawnerIds,
 }) => {
+  const [showConfetti, setShowConfetti] = useState(true); // State to toggle regular confetti
+  const [selectedPreset, setSelectedPreset] = useState<string>("classic"); // Default preset
+  const [showEmojis, setShowEmojis] = useState(true); // State to toggle emojis
+
   const presets = useMemo(() => ConfettiPresets(), []); // List of confetti presets
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationIdRef = useRef<number | null>(null);
   const timeoutIdRef = useRef<number | null>(null);
 
-  // Create an empty particle with default values
-  const createEmptyParticle = (): Particle => {
-    return {
-      x: 0,
-      y: 0,
-      size: 10,
-      speedX: 0,
-      speedY: 0,
-      accelerationX: 0,
-      accelerationY: 0,
-      color: null,
-      rotation: 0,
-      rotationSpeed: 0,
-      shape: null,
-      emoji: null,
-      lifetime: 0, // Initial lifetime of the particle
-    };
-  };
-
   // Particle Pool
-  const particlesPool = useRef<Particle[]>([]).current;
-
-  const [canvasDimensions, setCanvasDimensions] = useState({
-    width: 0,
-    height: 0,
-  });
-  const [showConfetti, setShowConfetti] = useState(true); // State to toggle regular confetti
-  const [showEmojis, setShowEmojis] = useState(true); // State to toggle emojis
-  const [selectedPreset, setSelectedPreset] = useState<string>("classic"); // Default preset
+  const particlesPoolForSpawner = useRef<Particle[]>([]).current;
+  // const particlesPoolForFalling = useRef<Particle[]>([]).current;
 
   const isClient = useOnlyOnClient(); // Ensure code runs only on the client side
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    // Setup canvas dimensions
-    setCanvasDimensions({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  }, [isClient]);
 
   const createParticle = useCallback(
     (burstX: number, burstY: number): Particle => {
       // Check if there are any available particles in the pool
-      const particle = particlesPool.pop() || createEmptyParticle(); // Get from pool or create a new one
+      const particle = particlesPoolForSpawner.pop() || CreateEmptyParticle(); // Get from pool or create a new one
 
       // If the particle already has x and y set, return it without modification
       if (particle.x !== 0 && particle.y !== 0) {
@@ -146,11 +133,11 @@ const Confetti: React.FC<ConfettiProps> = ({
       particle.lifetime = 0; // Initialize lifetime
 
       // Add the configured particle back to the pool
-      particlesPool.push(particle);
+      particlesPoolForSpawner.push(particle);
 
       return particle; // Return the configured particle
     },
-    [particlesPool, presets, selectedPreset, showEmojis, showConfetti]
+    [particlesPoolForSpawner, presets, selectedPreset, showEmojis, showConfetti]
   );
 
   const animateConfetti = () => {
@@ -191,7 +178,6 @@ const Confetti: React.FC<ConfettiProps> = ({
     }
   };
 
-  // Memoization storage
   let lastParticle: Particle | null = null;
   let lastParticleAlpha: number | null = null;
   let lastParticleFont: string | null = null;
@@ -293,31 +279,9 @@ const Confetti: React.FC<ConfettiProps> = ({
     // Start the animation
     animateConfetti();
 
-    // Ensure only one timeout is active, clearing any existing one
     if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
     timeoutIdRef.current = window.setTimeout(stopConfetti, 10000);
   };
-
-  // const startFallingConfetti = () => {
-  //   if (!isClient) return;
-  //   stopConfetti(); // Stop any existing confetti before starting a new one
-  //   const preset = presets[selectedPreset]; // Access the selected preset
-
-  //   const { width } = canvasDimensions;
-
-  //   // Preallocate the particle array and generate particles starting from the top
-  //   const newParticles = new Array(preset.particleCount);
-  //   for (let i = 0; i < preset.particleCount; i++) {
-  //     newParticles[i] = createParticle(Math.random() * width, 0);
-  //   }
-
-  //   particlesRef.current = newParticles;
-  //   animateConfetti();
-
-  //   // Ensure only one timeout is active by clearing any existing one before setting a new timeout
-  //   if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
-  //   timeoutIdRef.current = window.setTimeout(stopConfetti, 10000);
-  // };
 
   const stopConfetti = () => {
     if (animationIdRef.current) {
@@ -341,124 +305,42 @@ const Confetti: React.FC<ConfettiProps> = ({
     }
   };
 
-  const debounce = (func: () => void, delay: number) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        func();
-      }, delay);
-    };
-  };
-
   useEffect(() => {
     // Pre-fill the pool with empty particles
     const preset = presets[selectedPreset];
 
-    if (preset.particleCount > particlesPool.length) {
+    if (preset.particleCount > particlesPoolForSpawner.length) {
       for (let i = 0; i < preset.particleCount; i++) {
-        particlesPool.push(createEmptyParticle()); // Use a new function to create empty particles
+        particlesPoolForSpawner.push(CreateEmptyParticle()); // Use a new function to create empty particles
       }
     }
 
     // Initialize the particles every time the preset changes after the pool is pre-filled with empty particles && target Id's exist
     spawnerIds &&
       spawnerIds.length > 0 &&
-      particlesPool.length >= preset.particleCount &&
+      particlesPoolForSpawner.length >= preset.particleCount &&
       initializeParticles();
-  }, [initializeParticles, particlesPool, presets, selectedPreset, spawnerIds]);
-
-  // Handle window resizing
-  useEffect(() => {
-    if (!isClient) return;
-
-    const handleResize = debounce(() => {
-      setCanvasDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }, 100); // Adjust the debounce delay as needed
-
-    // Call once on mount to set the initial size
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [isClient]); // Only runs when isClient changes
-
-  // Update canvas size whenever dimensions change
-  useEffect(() => {
-    if (canvasRef.current) {
-      canvasRef.current.width = canvasDimensions.width;
-      canvasRef.current.height = canvasDimensions.height;
-    }
-  }, [canvasDimensions]);
+  }, [
+    initializeParticles,
+    particlesPoolForSpawner,
+    presets,
+    selectedPreset,
+    spawnerIds,
+  ]);
 
   return (
     <>
-      <div className="absolute bottom-0 flex-col z-20 gap-5 flex w-full justify-center items-center">
-        {/* <button
-          onClick={startFallingConfetti}
-          className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
-        >
-          Start Falling Confetti
-        </button> */}
-        <button
-          onClick={startCannonAtFindMe}
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Start Cannon at 🎉 Move Me!
-        </button>
-        <div className="mt-4 flex flex-col">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={showConfetti}
-              onChange={() => setShowConfetti(!showConfetti)}
-            />
-            <span className="ml-2">Show Regular Confetti</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={showEmojis}
-              onChange={() => setShowEmojis(!showEmojis)}
-            />
-            <span className="ml-2">Show Emojis</span>
-          </label>
-        </div>
-        <div className="mt-4 flex flex-col">
-          <label htmlFor="preset" className="mb-2">
-            Select Preset:
-          </label>
-          <select
-            id="preset"
-            value={selectedPreset}
-            onChange={(e) => setSelectedPreset(e.target.value)}
-            className="mt-1 p-2 border rounded"
-          >
-            {Object.keys(presets).map((key) => (
-              <option key={key} value={key}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      {isClient && (
-        <canvas
-          ref={canvasRef}
-          width={canvasDimensions.width * 2}
-          height={canvasDimensions.height * 2}
-          className="absolute top-[3.2em] min-h-[100vh] left-0 right-0 bottom-0 w-full h-full overflow-x-hidden flex flex-col justify-center items-center "
-          style={{ pointerEvents: "none" }} // Allows interaction for buttons etc. below canvas. Remove this or set it to "auto" to disable pointer events below canvas.
-        />
-      )}
+      <ConfettiCanvas
+        startCannonAtFindMe={startCannonAtFindMe}
+        presets={presets}
+        canvasRef={canvasRef}
+        showConfetti={showConfetti}
+        setShowConfetti={setShowConfetti}
+        showEmojis={showEmojis}
+        setShowEmojis={setShowEmojis}
+        selectedPreset={selectedPreset}
+        setSelectedPreset={setSelectedPreset}
+      />
     </>
   );
 };

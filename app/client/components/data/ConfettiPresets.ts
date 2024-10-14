@@ -1,20 +1,22 @@
+export type Presets = Record<
+  string,
+  {
+    particleCount: number;
+    gravity: number;
+    wind: number;
+    colors: string[];
+    size: { min: number; max: number };
+    speedX: { min: number; max: number };
+    speedY: { min: number; max: number };
+    rotationSpeed: { min: number; max: number };
+    emojiChance: number;
+  }
+>;
+
 function ConfettiPresets() {
-  const presets: Record<
-    string,
-    {
-      particleCount: number;
-      gravity: number;
-      wind: number;
-      colors: string[];
-      size: { min: number; max: number };
-      speedX: { min: number; max: number };
-      speedY: { min: number; max: number };
-      rotationSpeed: { min: number; max: number };
-      emojiChance: number;
-    }
-  > = {
+  const presets: Presets = {
     classic: {
-      particleCount: 850,
+      particleCount: 250,
       gravity: 0.3,
       wind: 0.1,
       colors: ["#FF6347", "#FFD700", "#ADFF2F", "#00BFFF", "#FF69B4"],
