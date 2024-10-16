@@ -17,21 +17,21 @@ export default function TermsOfService() {
 
         <h2>AGREEMENT TO OUR LEGAL TERMS</h2>
         <p className="flex flex-col gap-4 py-2">
-          We are https://wordkull.com ('Company', 'we', 'us', 'our').
+          We are https://makeconfetti.com ('Company', 'we', 'us', 'our').
         </p>
         <p>
-          We operate the website https://wordkull.com (the 'Site'), as
+          We operate the website https://makeconfetti.com (the 'Site'), as
           well as any other related products and services that refer or link to
           these legal terms (the 'Legal Terms') (collectively, the 'Services').
         </p>
         <p>
-          You can contact us by email at admin@wordkull.com or by mail to
-          http://wordkull.com, Toronto, Ontario, Canada.
+          You can contact us by email at admin@makeconfetti.com or by mail to
+          http://makeconfetti.com, Toronto, Ontario, Canada.
         </p>
         <p>
           These Legal Terms constitute a legally binding agreement made between
           you, whether personally or on behalf of an entity ('you'), and
-          https://wordkull.com, concerning your access to and use of the
+          https://makeconfetti.com, concerning your access to and use of the
           Services. You agree that by accessing the Services, you have read,
           understood, and agreed to be bound by all of these Legal Terms. IF YOU
           DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY
@@ -131,7 +131,7 @@ export default function TermsOfService() {
           <p>
             If you wish to make any use of the Services, Content, or Marks other
             than as set out in this section or elsewhere in our Legal Terms,
-            please address your request to: admin@wordkull.com. If we ever
+            please address your request to: admin@makeconfetti.com. If we ever
             grant you the permission to post, reproduce, or publicly display any
             part of our Services or Content, you must identify us as the owners
             or licensors of the Services, Content, or Marks and ensure that any
@@ -295,7 +295,7 @@ export default function TermsOfService() {
             username being changed by the Free Typing Camp admin or, in extreme
             cases, may lead to account suspension or termination. If you notice
             any users abusing this policy please feel free to contact us at
-            admin@wordkull.com and we will address the issue as soon as
+            admin@makeconfetti.com and we will address the issue as soon as
             possible.
           </p>
         </section>
@@ -776,7 +776,7 @@ export default function TermsOfService() {
           <h2 className="flex py-2 text-2xl">16. PRIVACY POLICY</h2>
           <p>
             We care about data privacy and security. Please review our Privacy
-            Policy: https://wordkull.com/privacypolicy. By using the
+            Policy: https://makeconfetti.com/privacypolicy. By using the
             Services, you agree to be bound by our Privacy Policy, which is
             incorporated into these Legal Terms. Please be advised the Services
             are hosted in Canada. If you access the Services from any other
@@ -860,7 +860,7 @@ export default function TermsOfService() {
           <h2 className="flex py-2 text-2xl">20. GOVERNING LAW</h2>
           <p>
             These Legal Terms shall be governed by and defined following the
-            laws of Canada. https://wordkull.com and yourself irrevocably
+            laws of Canada. https://makeconfetti.com and yourself irrevocably
             consent that the courts of Canada shall have exclusive jurisdiction
             to resolve any dispute which may arise in connection with these
             Legal Terms.
@@ -876,7 +876,7 @@ export default function TermsOfService() {
             (individually, a 'Party' and collectively, the 'Parties'), the
             Parties agree to first attempt to negotiate any Dispute (except
             those Disputes expressly provided below) informally for at least
-            http://wordkull.com days before initiating arbitration. Such
+            http://makeconfetti.com days before initiating arbitration. Such
             informal negotiations commence upon written notice from one Party to
             the other Party.
           </p>
@@ -889,11 +889,11 @@ export default function TermsOfService() {
             Arbitration Chamber (Belgium, Brussels, Avenue Louise, 146)
             according to the Rules of this ICAC, which, as a result of referring
             to it, is considered as the part of this clause. The number of
-            arbitrators shall be http://wordkull.com. The seat, or legal
-            place, or arbitration shall be http://wordkull.com. The
-            language of the proceedings shall be http://wordkull.com. The
+            arbitrators shall be http://makeconfetti.com. The seat, or legal
+            place, or arbitration shall be http://makeconfetti.com. The
+            language of the proceedings shall be http://makeconfetti.com. The
             governing law of these Legal Terms shall be substantive law of
-            http://wordkull.com.
+            http://makeconfetti.com.
           </p>
           <h3>Restrictions</h3>
           <p>
@@ -1090,10 +1090,10 @@ export default function TermsOfService() {
             further information regarding use of the Services, please contact us
             at:
           </p>
-          <p>https://wordkull.com</p>
+          <p>https://makeconfetti.com</p>
           <p>Toronto, Ontario</p>
           <p>Canada</p>
-          <p>admin@wordkull.com</p>
+          <p>admin@makeconfetti.com</p>
         </section>
       </main>
     </div>

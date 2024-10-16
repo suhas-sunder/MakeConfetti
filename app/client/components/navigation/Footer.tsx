@@ -12,7 +12,7 @@ function Footer() {
     >
       <div className="flex text-skull-dark-brown gap-1 font-bold tracking-widest">
         <span>&copy; 2024</span> <span className="hidden md:flex"> | </span>
-        <span className="font-overlock hidden sm:flex">WordSkull</span>
+        <span className="font-overlock hidden sm:flex">MakeConfetti</span>
         <span className="font-overlock sm:hidden flex">EKG</span>
         <span className="hidden md:flex"> - All Rights Reserved.</span>
       </div>

@@ -66,7 +66,7 @@ function Header() {
 
       <button
         onClick={() => handleAddSpawner()}
-        className="flex absolute bottom-[20em] z-[200] justify-center w-full items-center"
+        className="flex absolute bottom-[20em] z-[80] justify-center w-full items-center"
       >
         Add More Confetti Spawners
       </button>
@@ -83,10 +83,8 @@ export default function Index() {
       <main
         className={`${
           darkThemeActive && "text-white"
-        } flex flex-col sm:gap-14 bg-red-500 -translate-y-5 sm:translate-y-0 items-center animate-fadeIn min-h-[20em]`}
-      >
-        testasdfasdfasdf
-      </main>
+        } flex flex-col sm:gap-14 -translate-y-5 sm:translate-y-0 items-center animate-fadeIn`}
+      ></main>
     </div>
   );
 }

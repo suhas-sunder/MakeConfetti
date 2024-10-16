@@ -3,14 +3,16 @@ import { Link, MetaFunction } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Privacy Policy 🔏" },
-    { name: "description", content: "Emoji Kitchen Game Privacy Policy!" },
+    { title: "Privacy Policy 🔏 - Make Confetti Privacy Policy" },
+    {
+      name: "description",
+      content:
+        "Make Confetti Privacy Policy! This privacy notice for https://makeconfetti.com ('we', 'us', or 'our'), describes how and why we might collect, store, use, and/or share ('process') your information when you use our services",
+    },
   ];
 };
 
 export default function PrivacyPolicy() {
-
-
   return (
     <div className="my-20 flex flex-col items-center mx-10 justify-center gap-8 font-nunito text-skull-brown">
       <header className="max-w-[1200px]">
@@ -18,15 +20,15 @@ export default function PrivacyPolicy() {
         <h2 className="flex py-2 text-2xl">Last updated August 02, 2024</h2>
         <p className="flex flex-col gap-4 py-2">
           <span>
-            This privacy notice for https://wordkull.com ('we', 'us', or
+            This privacy notice for https://makeconfetti.com ('we', 'us', or
             'our'), describes how and why we might collect, store, use, and/or
             share ('process') your information when you use our services
             ('Services'), such as when you:
           </span>
           <ul className="flex list-inside list-disc flex-col gap-5 py-2 pl-5 dark:text-gray-400">
             <li>
-              Visit our website at http://wordkull.com, or any website
-              of ours that links to this privacy notice
+              Visit our website at http://makeconfetti.com, or any website of
+              ours that links to this privacy notice
             </li>
             <li>
               Engage with us in other related ways, including any sales,
@@ -158,7 +160,7 @@ export default function PrivacyPolicy() {
           <p>
             Like many businesses, we also collect information through cookies
             and similar technologies. You can find out more about this in our
-            Cookie Notice: http://wordkull.com/cookiespolicy.
+            Cookie Notice: http://makeconfetti.com/cookiespolicy.
           </p>
           <p className="flex flex-col gap-4">
             <span>The information we collect includes:</span>
@@ -269,7 +271,7 @@ export default function PrivacyPolicy() {
                 information to develop and display personalized content and
                 advertising tailored to your interests, location, and more. For
                 more information see our Cookie Notice:
-                http://wordkull.com/cookiecollection.
+                http://makeconfetti.com/cookiecollection.
               </li>
               <li>
                 To protect our Services. We may process your information as part
@@ -537,7 +539,7 @@ export default function PrivacyPolicy() {
             beacons and pixels) to access or store information. Specific
             information about how we use such technologies and how you can
             refuse certain cookies is set out in our Cookie Notice:
-            http://wordkull.com/cookiecollection.
+            http://makeconfetti.com/cookiecollection.
           </p>
         </section>
         <section className="flex flex-col gap-4">
@@ -609,7 +611,7 @@ export default function PrivacyPolicy() {
             been collected, we will deactivate the account and take reasonable
             measures to promptly delete such data from our records. If you
             become aware of any data we may have collected from children under
-            age 18, please contact us at admin@wordkull.com.
+            age 18, please contact us at admin@makeconfetti.com.
           </p>
         </section>
         <section className="flex flex-col gap-4">
@@ -633,7 +635,7 @@ export default function PrivacyPolicy() {
             automated decision-making. In certain circumstances, you may also
             have the right to object to the processing of your personal
             information. You can make such a request by contacting us at
-            admin@wordkull.com.
+            admin@makeconfetti.com.
           </p>
           <p>
             We will consider and act upon any request in accordance with
@@ -671,7 +673,7 @@ export default function PrivacyPolicy() {
             process your personal information, which may be express and/or
             implied consent depending on the applicable law, you have the right
             to withdraw your consent at any time. You can withdraw your consent
-            at any time by contacting us at admin@wordkull.com.
+            at any time by contacting us at admin@makeconfetti.com.
           </p>
           <p>
             However, please note that this will not affect the lawfulness of the
@@ -700,7 +702,7 @@ export default function PrivacyPolicy() {
             choose to remove cookies or reject cookies, this could affect
             certain features or services of our Services. For further
             information, please see our Cookie Notice:
-            http://wordkull.com/cookiecollection.
+            http://makeconfetti.com/cookiecollection.
           </p>
         </section>
         <section className="flex flex-col gap-4">
@@ -906,10 +908,10 @@ export default function PrivacyPolicy() {
           </p>
           <p>
             To exercise these rights, you can contact us by submitting a data
-            subject access request, by email at admin@wordkull.com, or
-            by referring to the contact details at the bottom of this document.
-            If you have a complaint about how we handle your data, we would like
-            to hear from you.
+            subject access request, by email at admin@makeconfetti.com, or by
+            referring to the contact details at the bottom of this document. If
+            you have a complaint about how we handle your data, we would like to
+            hear from you.
           </p>
           <h3>Colorado Residents</h3>
           <p>
@@ -1059,7 +1061,7 @@ export default function PrivacyPolicy() {
           <p>
             If we decline to take action regarding your request, we will inform
             you of our decision and reasoning behind it. If you wish to appeal
-            our decision, please email us at admin@wordkull.com. Within
+            our decision, please email us at admin@makeconfetti.com. Within
             sixty (60) days of receipt of an appeal, we will inform you in
             writing of any action taken or not taken in response to the appeal,
             including a written explanation of the reasons for the decisions. If
@@ -1170,9 +1172,9 @@ export default function PrivacyPolicy() {
           </h2>
           <p>
             If you have questions or comments about this notice, you may email
-            us at admin@wordkull.com or contact us by post at:
+            us at admin@makeconfetti.com or contact us by post at:
           </p>
-          <p>https://wordkull.com/</p>
+          <p>https://makeconfetti.com/</p>
           <p>Toronto, Ontario</p>
           <p>Canada</p>
         </section>

@@ -23,37 +23,7 @@ export default function Sitemap() {
         <ol className="flex  flex-col list-decimal font-nunito mr-auto">
           <li>
             <Link to="/" className=" hover:text-sky-400 flex mr-auto">
-              Word Skull (Home)
-            </Link>
-          </li>
-          <li>
-            <Link to="/games" className="hover: hover:text-sky-400">
-              Games
-            </Link>
-          </li>
-          <li>
-            <Link to="/stats" className="hover: hover:text-sky-400">
-              Stats
-            </Link>
-          </li>
-          <li>
-            <Link to="/blog" className="hover: hover:text-sky-400">
-              Blog
-            </Link>
-          </li>
-          <li>
-            <Link to="/settings" className="hover: hover:text-sky-400">
-              Settings
-            </Link>
-          </li>
-          <li>
-            <Link to="/rules" className="hover: hover:text-sky-400">
-              Rules
-            </Link>
-          </li>
-          <li>
-            <Link to="/faq" className="hover: hover:text-sky-400">
-              FAQ
+              Make Confetti(Home)
             </Link>
           </li>
           <li>
@@ -79,6 +49,17 @@ export default function Sitemap() {
               rel="noreferrer"
             >
               Emoji Kitchen Game
+            </Link>
+          </li>
+          <li>
+            <Link
+              target="_blank"
+              to="https://www.wordskull.com/"
+              className="hover: hover:text-sky-400"
+              rel="noreferrer"
+            >
+              Word Skull (Wordle like Game) - Sharpen Your Mind, One Word at a
+              Time.
             </Link>
           </li>
           <li>
