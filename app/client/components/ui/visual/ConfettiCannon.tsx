@@ -247,112 +247,176 @@ const Confetti: React.FC<ConfettiProps> = ({
   };
 
   // Function to round size to nearest increment (e.g., 10)
-const roundToNearestSize = (size: number, increment: number) => {
-  return Math.round(size / increment) * increment;
-};
+  const roundToNearestSize = (size: number, increment: number) => {
+    return Math.round(size / increment) * increment;
+  };
 
-// Cache object for emojis and shapes
-const emojiCache: { [key: string]: HTMLCanvasElement } = {};
-const shapeCache: { [key: string]: HTMLCanvasElement } = {};
+  // Cache object for emojis and shapes
+  const emojiCache: { [key: string]: HTMLCanvasElement } = {};
+  const shapeCache: { [key: string]: HTMLCanvasElement } = {};
 
-// Function to get the cached emoji or create it if not cached
-const getCachedEmoji = (emoji: string, size: number, increment: number = 10) => {
-  const roundedSize = roundToNearestSize(size, increment);
-  const cacheKey = `${emoji}-${roundedSize}`;
+  // Function to get the cached emoji or create it if not cached
+  const getCachedEmoji = (
+    emoji: string,
+    size: number,
+    increment: number = 10
+  ) => {
+    const roundedSize = roundToNearestSize(size, increment);
+    const cacheKey = `${emoji}-${roundedSize}`;
 
-  // Return the cached canvas if it exists
-  if (emojiCache[cacheKey]) {
-    return emojiCache[cacheKey];
-  }
-
-  // Create a new off-screen canvas for the emoji
-  const offscreenCanvas = document.createElement("canvas");
-  const ctx = offscreenCanvas.getContext("2d");
-
-  if (!ctx) return null;
-
-  // Set canvas dimensions based on the rounded emoji size
-  offscreenCanvas.width = roundedSize;
-  offscreenCanvas.height = roundedSize;
-
-  // Draw the emoji on the off-screen canvas
-  ctx.font = `${roundedSize}px Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(emoji, roundedSize / 2, roundedSize / 2); // Center the emoji on the canvas
-
-  // Cache the canvas
-  emojiCache[cacheKey] = offscreenCanvas;
-
-  return offscreenCanvas;
-};
-
-// Function to get the cached shape or create it if not cached
-const getCachedShape = (shape: string, size: number, color: string, increment: number = 10) => {
-  const roundedSize = roundToNearestSize(size, increment);
-  const cacheKey = `${shape}-${roundedSize}-${color}`;
-
-  // Return the cached canvas if it exists
-  if (shapeCache[cacheKey]) {
-    return shapeCache[cacheKey];
-  }
-
-  // Create a new off-screen canvas for the shape
-  const offscreenCanvas = document.createElement("canvas");
-  const ctx = offscreenCanvas.getContext("2d");
-
-  if (!ctx) return null;
-
-  // Set canvas dimensions based on the rounded shape size
-  offscreenCanvas.width = roundedSize;
-  offscreenCanvas.height = roundedSize;
-
-  // Draw the shape on the off-screen canvas
-  ctx.fillStyle = color;
-  ctx.translate(roundedSize / 2, roundedSize / 2); // Center the shape
-  if (shape === "circle") {
-    ctx.beginPath();
-    ctx.arc(0, 0, roundedSize / 2, 0, Math.PI * 2);
-    ctx.fill();
-  } else {
-    ctx.fillRect(-roundedSize / 2, -roundedSize / 2, roundedSize, roundedSize);
-  }
-
-  // Cache the canvas
-  shapeCache[cacheKey] = offscreenCanvas;
-
-  return offscreenCanvas;
-};
-
-// Updated drawParticle function to use the cached emoji or shape
-const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle, increment: number = 10) => {
-  const { x, y, size, rotation, emoji, shape, color, lifetime } = particle;
-  const alpha = 1 - lifetime / maxLifetime; // Fading effect
-
-  // Round size to nearest increment
-  const roundedSize = roundToNearestSize(size, increment);
-
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate((rotation * Math.PI) / 180);
-  ctx.globalAlpha = alpha;
-
-  if (emoji) {
-    const emojiCanvas = getCachedEmoji(emoji, size, increment);
-    if (emojiCanvas) {
-      // Draw emoji from cache using the rounded size
-      ctx.drawImage(emojiCanvas, -roundedSize / 2, -roundedSize / 2, roundedSize, roundedSize);
+    // Return the cached canvas if it exists
+    if (emojiCache[cacheKey]) {
+      return emojiCache[cacheKey];
     }
-  } else if (shape) {
-    const shapeCanvas = getCachedShape(shape, size, color!, increment);
-    if (shapeCanvas) {
-      // Draw shape from cache using the rounded size
-      ctx.drawImage(shapeCanvas, -roundedSize / 2, -roundedSize / 2, roundedSize, roundedSize);
-    }
-  }
 
-  ctx.restore();
-};
+    // Create a new off-screen canvas for the emoji
+    const offscreenCanvas = document.createElement("canvas");
+    const ctx = offscreenCanvas.getContext("2d");
+
+    if (!ctx) return null;
+
+    // Set canvas dimensions based on the rounded emoji size
+    offscreenCanvas.width = roundedSize;
+    offscreenCanvas.height = roundedSize;
+
+    // Draw the emoji on the off-screen canvas
+    ctx.font = `${roundedSize}px Arial`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(emoji, roundedSize / 2, roundedSize / 2); // Center the emoji on the canvas
+
+    // Cache the canvas
+    emojiCache[cacheKey] = offscreenCanvas;
+
+    return offscreenCanvas;
+  };
+
+  // Function to get the cached shape or create it if not cached
+  const getCachedShape = (
+    shape: string,
+    size: number,
+    color: string,
+    increment: number = 10
+  ) => {
+    const roundedSize = roundToNearestSize(size, increment);
+    const cacheKey = `${shape}-${roundedSize}-${color}`;
+
+    // Return the cached canvas if it exists
+    if (shapeCache[cacheKey]) {
+      return shapeCache[cacheKey];
+    }
+
+    // Create a new off-screen canvas for the shape
+    const offscreenCanvas = document.createElement("canvas");
+    const ctx = offscreenCanvas.getContext("2d");
+
+    if (!ctx) return null;
+
+    // Set canvas dimensions based on the rounded shape size
+    offscreenCanvas.width = roundedSize;
+    offscreenCanvas.height = roundedSize;
+
+    // Draw the shape on the off-screen canvas
+    ctx.fillStyle = color;
+    ctx.translate(roundedSize / 2, roundedSize / 2); // Center the shape
+    if (shape === "circle") {
+      ctx.beginPath();
+      ctx.arc(0, 0, roundedSize / 2, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillRect(
+        -roundedSize / 2,
+        -roundedSize / 2,
+        roundedSize,
+        roundedSize
+      );
+    }
+
+    // Cache the canvas
+    shapeCache[cacheKey] = offscreenCanvas;
+
+    return offscreenCanvas;
+  };
+
+  // Updated drawParticle function to use the cached emoji or shape
+  const drawParticle = (
+    ctx: CanvasRenderingContext2D,
+    particle: Particle,
+    increment: number = 10,
+    rotateOnZ: boolean = true // New parameter to toggle Z rotation and 3D skew effect
+  ) => {
+    const {
+      x,
+      y,
+      size,
+      rotation,
+      rotationSpeed,
+      emoji,
+      shape,
+      color,
+      lifetime,
+    } = particle;
+
+    const alpha = 1 - lifetime / maxLifetime; // Fading effect
+
+    // Round size to nearest increment
+    const roundedSize = roundToNearestSize(size, increment);
+
+    ctx.save();
+
+    // Translate to the particle's position
+    ctx.translate(x, y);
+
+    // Precalculate angle and scale once
+    const angle = (rotation * Math.PI) / 180; // Convert to radians
+    const scale = rotateOnZ ? Math.cos(angle) : 1; // Apply scaling for 3D effect when rotateOnZ is true
+
+    if (rotateOnZ) {
+      // 3D-like rotation with skew effect
+      particle.rotation += rotationSpeed; // Increment rotation based on speed
+      ctx.rotate(angle); // Rotate around the Z-axis
+
+      // Apply skew transform for the 3D effect
+      const skewFactor = Math.sin(angle) * 0.5;
+      ctx.transform(1, skewFactor, skewFactor, 1, 0, 0);
+    } else {
+      // Standard 2D rotation without skew
+      ctx.rotate(angle); // Simple rotation around Z-axis
+    }
+
+    ctx.globalAlpha = alpha; // Apply transparency based on lifetime
+
+    // Drawing logic for emoji or shape
+    if (emoji) {
+      const emojiCanvas = getCachedEmoji(emoji, size, increment);
+      if (emojiCanvas) {
+        // Use ctx.scale() for scaling instead of resizing manually
+        ctx.scale(scale, 1); // Apply scaling for 3D effect
+        ctx.drawImage(
+          emojiCanvas,
+          -roundedSize / 2,
+          -roundedSize / 2,
+          roundedSize,
+          roundedSize
+        );
+      }
+    } else if (shape) {
+      const shapeCanvas = getCachedShape(shape, size, color!, increment);
+      if (shapeCanvas) {
+        // Use ctx.scale() for scaling instead of resizing manually
+        ctx.scale(scale, 1); // Apply scaling for 3D effect
+        ctx.drawImage(
+          shapeCanvas,
+          -roundedSize / 2,
+          -roundedSize / 2,
+          roundedSize,
+          roundedSize
+        );
+      }
+    }
+
+    ctx.restore();
+  };
 
   const initializeParticles = useCallback(() => {
     stopConfetti(); // Stop any existing confetti before starting a new one

@@ -95,7 +95,11 @@ export function Body({ children }: { children: React.ReactNode }) {
   const { darkThemeActive } = useTheme();
 
   return (
-    <body className={`pt-6 ${darkThemeActive && "bg-slate-900"}`}>
+    <body
+      className={`pt-6 transition-colors duration-[600ms] ${
+        darkThemeActive && "bg-slate-900"
+      }`}
+    >
       <NavBar />
       <div>{children}</div>
       <ScrollRestoration />
@@ -104,7 +108,6 @@ export function Body({ children }: { children: React.ReactNode }) {
     </body>
   );
 }
-
 
 // Layout Component for rendering HTML structure
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -131,6 +134,5 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 // App Component for managing application state
 export default function App() {
-
   return <Outlet />;
 }

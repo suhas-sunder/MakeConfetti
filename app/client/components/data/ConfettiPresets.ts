@@ -141,7 +141,7 @@ function ConfettiPresets() {
       gravity: 0.5,
       wind: 2,
       colors: ["#FF4500", "#FFA500", "#FFD700", "#ADFF2F", "#00FF7F"],
-      size: { min: 3, max: 10 },
+      size: { min: 5, max: 10 },
       speedX: { min: -5, max: 5 },
       speedY: { min: -15, max: -20 },
       rotationSpeed: { min: -5, max: 5 },
@@ -185,7 +185,7 @@ function ConfettiPresets() {
       gravity: 0.6,
       wind: 0,
       colors: ["#00FFFF", "#4682B4", "#ADFF2F", "#FFFFFF"],
-      size: { min: 2, max: 5 },
+      size: { min: 5, max: 5 },
       speedX: { min: -1, max: 1 },
       speedY: { min: -10, max: -15 },
       rotationSpeed: { min: -2, max: 2 },
@@ -207,7 +207,7 @@ function ConfettiPresets() {
       gravity: 0.6,
       wind: 0,
       colors: ["#FF0000", "#FF8C00", "#FFD700", "#32CD32", "#1E90FF"],
-      size: { min: 4, max: 10 },
+      size: { min: 5, max: 10 },
       speedX: { min: -6, max: 6 },
       speedY: { min: -12, max: -18 },
       rotationSpeed: { min: -4, max: 4 },
@@ -248,7 +248,7 @@ function ConfettiPresets() {
         "#0000FF",
         "#4B0082",
       ],
-      size: { min: 4, max: 12 },
+      size: { min: 5, max: 12 },
       speedX: { min: -3, max: 3 },
       speedY: { min: -10, max: -15 },
       rotationSpeed: { min: -6, max: 6 },
@@ -325,7 +325,7 @@ function ConfettiPresets() {
       gravity: 0.4,
       wind: 2.5,
       colors: ["#00FA9A", "#8A2BE2", "#00FFFF", "#FF69B4", "#FFD700"],
-      size: { min: 4, max: 16 },
+      size: { min: 5, max: 16 },
       speedX: { min: -30, max: 30 },
       speedY: { min: -40, max: -60 },
       rotationSpeed: { min: -15, max: 15 },
@@ -347,7 +347,7 @@ function ConfettiPresets() {
       gravity: 0.2,
       wind: 0, // No wind to focus on spiral motion
       colors: ["#4CAF50", "#2196F3", "#FFC107", "#FF5722"],
-      size: { min: 4, max: 12 },
+      size: { min: 5, max: 12 },
       speedX: { min: -20, max: 20 }, // Broad X range for spiraling
       speedY: { min: -25, max: -40 }, // Upward speed for spiraling effect
       rotationSpeed: { min: -10, max: 10 },
@@ -369,7 +369,7 @@ function ConfettiPresets() {
       gravity: 0.1,
       wind: 1.5, // Gentle wind for lateral movement
       colors: ["#FF69B4", "#00FA9A", "#FFD700", "#8A2BE2"],
-      size: { min: 3, max: 15 },
+      size: { min: 5, max: 15 },
       speedX: { min: -10, max: 10 }, // Control lateral motion
       speedY: { min: -10, max: -30 }, // Upward motion with gentle gravity
       rotationSpeed: { min: -5, max: 5 },

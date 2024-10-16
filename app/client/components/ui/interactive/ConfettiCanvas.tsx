@@ -112,7 +112,7 @@ function ConfettiCanvas({
           ref={canvasRef}
           width={canvasDimensions.width * 2}
           height={canvasDimensions.height * 2}
-          className="absolute top-[3.2em] min-h-[100vh] left-0 right-0 bottom-0 w-full h-full overflow-x-hidden flex flex-col justify-center items-center "
+          className="absolute min-h-[100vh] w-full h-full flex flex-col justify-center items-center "
           style={{ pointerEvents: "none" }} // Allows interaction for buttons etc. below canvas. Remove this or set it to "auto" to disable pointer events below canvas.
         />
       )}

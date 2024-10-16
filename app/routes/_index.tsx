@@ -41,7 +41,7 @@ function Header() {
 
   return (
     <header
-      className={`min-h-[100vh] flex max-w-[100vw] transition-colors duration-[600ms] ${
+      className={` w-full h-full min-h-[100vh] flex transition-colors duration-[600ms] mt-[0.5em] ${
         darkThemeActive ? "bg-sky-950 text-white" : "bg-rose-50"
       }`}
     >
@@ -55,7 +55,7 @@ function Header() {
         🎊🥳 Make Confetti 🪅🎉
       </h1>
 
-      <div className="flex gap-5 w-full flex-wrap items-center justify-center max-w-[1400px] mx-auto mb-auto mt-[10em]">
+      <div className="flex gap-5 w-full flex-wrap items-center justify-center max-w-[1400px] mx-auto mb-auto mt-[16em]">
         {spawnerIds.map((id) => (
           <Fragment key={id + "movable-item-key"}>
             <MoveMe id={id} />
@@ -63,6 +63,7 @@ function Header() {
         ))}
       </div>
       <Confetti spawnerIds={spawnerIds} />
+
       <button
         onClick={() => handleAddSpawner()}
         className="flex absolute bottom-[20em] z-[200] justify-center w-full items-center"
@@ -82,8 +83,10 @@ export default function Index() {
       <main
         className={`${
           darkThemeActive && "text-white"
-        } flex flex-col sm:gap-14   -translate-y-5 sm:translate-y-0 items-center animate-fadeIn`}
-      ></main>
+        } flex flex-col sm:gap-14 bg-red-500 -translate-y-5 sm:translate-y-0 items-center animate-fadeIn min-h-[20em]`}
+      >
+        testasdfasdfasdf
+      </main>
     </div>
   );
 }
