@@ -68,14 +68,14 @@ function MainLinks({
           darkThemeActive
             ? " bg-slate-500 hover:bg-white border-slate-600"
             : " bg-slate-100 hover:bg-slate-500"
-        } group justify-center items-center border-2 py-1/2 ml-2 cursor-pointer hover:border-skull-brown hover:border-opacity-60 flex overflow-hidden rounded-full`}
+        } transition-colors duration-[600ms] group justify-center items-center border-2 py-1/2 ml-2 cursor-pointer hover:border-skull-brown hover:border-opacity-60 flex overflow-hidden rounded-full`}
       >
         <span
           title="Toggle 'Dark' theme"
           className={`${
             darkThemeActive
-              ? "group-hover:text-2xl group-hover:pr-1 pr-0 text-sm -translate-x-2 group-hover:translate-x-1"
-              : " group-hover:text-sm group-hover:pr-0 pr-1 text-2xl translate-x-1 group-hover:-translate-x-2"
+              ? "transition-all duration-[600ms] group-hover:text-2xl group-hover:pr-1 pr-0 text-sm -translate-x-2 group-hover:translate-x-1"
+              : "transition-all duration-[600ms] group-hover:text-sm group-hover:pr-0 pr-1 text-2xl translate-x-1 group-hover:-translate-x-2"
           }`}
         >
           🌞
@@ -84,8 +84,8 @@ function MainLinks({
           title="Toggle 'Light' theme"
           className={`${
             darkThemeActive
-              ? "group-hover:text-sm group-hover:pl-0 pl-1 text-2xl group-hover:translate-x-2 translate-x-0"
-              : "group-hover:text-2xl group-hover:pl-1 pl-0 text-sm group-hover:translate-x-0 translate-x-2"
+              ? "transition-all duration-[600ms] group-hover:text-sm group-hover:pl-0 pl-1 text-2xl group-hover:translate-x-2 translate-x-0"
+              : "transition-all duration-[600ms] group-hover:text-2xl group-hover:pl-1 pl-0 text-sm group-hover:translate-x-0 translate-x-2"
           }`}
         >
           🌝

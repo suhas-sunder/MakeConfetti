@@ -34,5 +34,6 @@ setup_droplet.txt
 config.env
 *.env
 database.sql
+ecosystem.config.json
 
 
